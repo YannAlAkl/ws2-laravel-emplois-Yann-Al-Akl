@@ -34,6 +34,7 @@ class CandidatureController extends BaseController
 
         $candidature = new Candidature();
         $candidature->offre_emploi_id = $offreEmploi->id;
+        $candidature->user_id = auth()->id;
         $candidature->prenom          = $request->prenom;
         $candidature->nom             = $request->nom;
         $candidature->courriel        = $request->courriel;

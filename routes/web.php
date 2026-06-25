@@ -20,6 +20,7 @@ Route::get('/emplois/{offreEmploi}/postuler', [CandidatureController::class, 'po
 
 Route::post('/emplois/{offreEmploi}/postuler', [CandidatureController::class, 'soumettreCandidature'])
     ->name('candidatures.store');
+    Route::middleware(['auth','verified','admin'])->group(function () {
 
 Route::get('/admin/offres', [OffreEmploiController::class, 'index'])
     ->name('admin.offres.index');
@@ -32,7 +33,7 @@ Route::post('/admin/offres', [OffreEmploiController::class, 'store'])
 
 Route::get('/admin/offres/{offreEmploi}/edit', [OffreEmploiController::class, 'edit'])
     ->name('admin.offres.edit');
-
+    });
 Route::match(['put', 'patch'], '/admin/offres/{offreEmploi}', [OffreEmploiController::class, 'update'])
     ->name('admin.offres.update');
 
@@ -46,9 +47,11 @@ Route::get('/admin/candidatures/{candidature}/cv', [CandidatureController::class
     ->name('admin.candidatures.cv');
 // --- Authentification ---
 Route::middleware('guest')->group(function () {
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+// routes/web.php
+Route::get('/register', [AuthController::class, 'showRegisterForm'])
+-> name ('register');
     Route::post('/register', [AuthController::class, 'register']);
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 });
 
