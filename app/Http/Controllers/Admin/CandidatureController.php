@@ -7,6 +7,7 @@ use App\Models\OffreEmploi;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Auth\AuthController;
 
 class CandidatureController extends BaseController
 {
@@ -34,7 +35,7 @@ class CandidatureController extends BaseController
 
         $candidature = new Candidature();
         $candidature->offre_emploi_id = $offreEmploi->id;
-        $candidature->user_id = auth()->id;
+        $candidature->user_id = $request->user()->id;
         $candidature->prenom          = $request->prenom;
         $candidature->nom             = $request->nom;
         $candidature->courriel        = $request->courriel;
@@ -51,21 +52,5 @@ class CandidatureController extends BaseController
             ->with('success', 'Candidature soumise avec succes. Merci !');
     }
 
-    public function cv(Request $request, Candidature $candidature)
-    {
-        abort_unless(Storage::disk('local')->exists($candidature->cv_chemin), 404);
 
-        if ($request->boolean('download')) {
-            return Storage::disk('local')->download(
-                $candidature->cv_chemin,
-                $candidature->cv_nom_original
-            );
-        }
-
-        return Storage::disk('local')->response(
-            $candidature->cv_chemin,
-            $candidature->cv_nom_original,
-            ['Content-Type' => $candidature->cv_type_mime]
-        );
-    }
 }

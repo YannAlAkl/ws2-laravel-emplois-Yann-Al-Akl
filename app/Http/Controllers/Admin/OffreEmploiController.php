@@ -8,14 +8,30 @@ use Illuminate\Routing\Controller as BaseController;
 
 class OffreEmploiController extends BaseController
 {
-    public function index()
-    {
-        $offreEmplois = OffreEmploi::withCount('candidatures')
-            ->orderByDesc('created_at')
-            ->get();
+    public function index(Request $request)
 
-        return view('admin.offres.index', compact('offreEmplois'));
+{
+
+    $parPage = (int) $request->input('par_page', 10);
+
+    if (! in_array($parPage, [10, 25, 50])) {
+
+        $parPage = 10;
+
     }
+
+    $offreEmplois = OffreEmploi::withCount('candidatures')
+
+        ->orderByDesc('created_at')
+
+        ->paginate($parPage)
+
+        ->withQueryString();
+
+    return view('admin.offres.index', compact('offreEmplois'));
+
+}
+ 
 
     public function create()
     {
